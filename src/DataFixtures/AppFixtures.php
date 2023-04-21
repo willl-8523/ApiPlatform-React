@@ -18,6 +18,8 @@ class AppFixtures extends Fixture
         $interval = new DateInterval('P6M'); // P6M représente une période de 6 mois
         $minDate = $today->sub($interval)->getTimestamp(); // la date minimum est aujourd'hui moins 6 mois
         $maxDate = $today->getTimestamp(); // la date maximum est aujourd'hui
+
+        $chrono = 1;
         
         for ($c = 0; $c < 30; $c++) { 
             $customer = new Customer;
@@ -40,9 +42,12 @@ class AppFixtures extends Fixture
                 $invoice->setAmount($faker->randomFloat(2, 250, 5000))
                         ->setSentAt($randomDate) 
                         ->setStatus($faker->randomElement(['SENT', 'PAID', 'CANCELLED'])) // récupere un element du tableau
-                        ->setCustomer($customer); // Attribuer la facture au client
+                        ->setCustomer($customer) // Attribuer la facture au client
+                        ->setChrono($chrono);
 
                 $manager->persist($invoice);
+
+                $chrono++;
             }
         }
 
