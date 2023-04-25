@@ -2,12 +2,24 @@
 
 namespace App\Entity;
 
-use App\Repository\InvoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\InvoiceRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass=InvoiceRepository::class)
  * @ORM\Table(name="invoices")
+ * @ApiResource(
+ *  attributes={
+ *      "pagination_enabled"=true,
+ *      "pagination_items_per_page"=10,
+ *  }
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"customer.firstName": "partial"})
+ * @ApiFilter(OrderFilter::class, properties={"sentAt"})
  */
 class Invoice
 {
