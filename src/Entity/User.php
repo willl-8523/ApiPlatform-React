@@ -23,19 +23,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"invoices_read", "customer_read"})
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"invoices_read", "customer_read"})
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"invoices_read", "customer_read"})
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
      */
     private $roles = [];
 
@@ -47,13 +47,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoices_read", "customer_read"})
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoices_read", "customer_read"})
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
      */
     private $lastName;
 
