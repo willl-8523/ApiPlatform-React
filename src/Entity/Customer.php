@@ -16,6 +16,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
  * @ORM\Table(name="customers")
  * @ApiResource(
+ *  subresourceOperations={
+ *      "invoices_get_subresource"={
+ *          "path"="/customers/{id}/invoices",
+ *      }
+ *  },
  *  collectionOperations={
  *      "GET"={
  *          "path"="/customers",
