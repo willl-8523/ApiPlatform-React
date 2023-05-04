@@ -27,31 +27,31 @@ class Customer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"customer_read"})
+     * @Groups({"customer_read", "invoices_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read"})
+     * @Groups({"customer_read", "invoices_read"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read"})
+     * @Groups({"customer_read", "invoices_read"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read"})
+     * @Groups({"customer_read", "invoices_read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"customer_read"})
+     * @Groups({"customer_read", "invoices_read"})
      */
     private $company;
 
@@ -63,7 +63,7 @@ class Customer
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="customers")
-     * @Groups({"customer_read"})
+     * @Groups({"customer_read", "invoices_read"})
      */
     private $user;
 
