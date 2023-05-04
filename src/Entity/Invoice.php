@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\InvoiceRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
@@ -63,6 +64,16 @@ class Invoice
      * @Groups({"invoices_read", "customer_read"})
      */
     private $chrono;
+
+    /**
+     * Permet de récuperer le user à qui appartient finalement la facture
+     * @Groups({"invoices_read"})
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->customer->getUser();
+    }
 
     public function getId(): ?int
     {
