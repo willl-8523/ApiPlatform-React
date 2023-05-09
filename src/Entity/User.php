@@ -59,7 +59,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="user")
-     * @ApiSubresource
      */
     private $customers;
 

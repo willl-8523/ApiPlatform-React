@@ -22,6 +22,17 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          }
  *      }
  *  },
+ *  itemOperations={"GET", "PUT", "DELETE", "increment"={
+ *                  "method"="post", 
+ *                  "path"="/invoices/{id}/increment",
+ *                  "controller"="App\Controller\InvoiceIncrementationController",
+ *                  "openapi_context"={
+ *                      "summary"="Incremente une facture",
+ *                      "description"="Incremente le chrono d'une facture 
+ *                                     donnée",
+ *                    }
+ *                 }
+ *  },
  *  attributes={
  *      "pagination_enabled"=true,
  *      "pagination_items_per_page"=10,
