@@ -3,14 +3,19 @@
 namespace App\Entity;
 
 use App\Entity\User;
+
 use Doctrine\ORM\Mapping as ORM;
+
 use App\Repository\InvoiceRepository;
+use App\Controller\InvoiceIncrementationController;
+
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\InvoiceIncrementationController;
-use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=InvoiceRepository::class)
@@ -56,18 +61,31 @@ class Invoice
     /**
      * @ORM\Column(type="float")
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="Le montant de la facture est obligatoire")
+     * @Assert\Type(type="numeric", message="Le montant de la facture doit être numerique"
+     * )
      */
     private $amount;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="La date d'envoie doit être renseignée")
+     * @Assert\Type(
+     *  type="DateTimeImmutable",
+     *  message="La date doit être au format YYY-MM-DD"
+     * )
      */
     private $sentAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="Le status de la facture doit être renseigné")
+     * @Assert\Choice(
+     *  {"SENT", "CANCELLED", "PAID"},
+     *  message="Le satut doit être SENT, CANCELLED, PAID"
+     * )
      */
     private $status;
 
@@ -75,12 +93,18 @@ class Invoice
      * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"invoices_read"})
+     * @Assert\NotBlank(message="Le client doit être renseigné")
      */
     private $customer;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="Le numero de la facture doit être renseigné")
+     * @Assert\Type(
+     *  type="integer", 
+     *  message="Le numero de facture doit être un nombre"
+     * )
      */
     private $chrono;
 
