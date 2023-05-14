@@ -43,7 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "pagination_enabled"=true,
  *      "pagination_items_per_page"=10,
  *  },
- *  normalizationContext={"groups"={"invoices_read"}}
+ *  normalizationContext={"groups"={"invoices_read"}},
+ *  denormalizationContext={"disable_type_enforcement"=true}
  * )
  * @ApiFilter(SearchFilter::class, properties={"customer.firstName": "partial"})
  * @ApiFilter(OrderFilter::class, properties={"sentAt"})
@@ -128,7 +129,7 @@ class Invoice
         return $this->amount;
     }
 
-    public function setAmount(float $amount): self
+    public function setAmount($amount): self
     {
         $this->amount = $amount;
 
@@ -176,7 +177,7 @@ class Invoice
         return $this->chrono;
     }
 
-    public function setChrono(int $chrono): self
+    public function setChrono($chrono): self
     {
         $this->chrono = $chrono;
 
