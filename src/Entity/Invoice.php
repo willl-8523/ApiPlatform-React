@@ -141,7 +141,7 @@ class Invoice
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeImmutable $sentAt): self
+    public function setSentAt($sentAt): self
     {
         $this->sentAt = $sentAt;
 
