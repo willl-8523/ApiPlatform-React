@@ -2,19 +2,25 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
-use Doctrine\Common\Collections\ArrayCollection;
+
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="users")
+ * @UniqueEntity("email", message="L'adresse mail existe déjà")
  * @ApiResource
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -28,34 +34,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="json")
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
-     */
-    private $roles = [];
-
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
-    private $password;
-
-    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="Le prenom de l'utilisateur est obligatoire")
+     * @Assert\Length(
+     *  min=2,
+     *  minMessage= "Le prenom de l'utilisateur doit avoir minimum 3 caracteres",
+     *  max=255,
+     *  maxMessage= "Le prenom de l'utilisateur doit avoir entre 2 et 255 caracteres"
+     * )
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="Le nom de l'utilisateur est obligatoire")
+     * @Assert\Length(
+     *  min=2,
+     *  minMessage= "Le nom de l'utilisateur doit avoir minimum 3 caracteres",
+     *  max=255,
+     *  maxMessage= "Le nom de l'utilisateur doit avoir entre 2 et 255 caracteres"
+     * )
      */
     private $lastName;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="L'email' est obligatoire")
+     * @Assert\Email(message = "Email invalide")
+     */
+    private $email;
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Le mot de est obligatoire")
+     * @Assert\Length(
+     *  min=2,
+     *  minMessage= "Le mot de passe doit avoir minimum 2 caracteres",
+     *  max=255,
+     *  maxMessage= "Le mot de passe doit avoir entre 2 et 255 caracteres"
+     * )
+     */
+    private $password;
+
+    /**
+     * @ORM\Column(type="json")
+     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     */
+    private $roles = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="user")
