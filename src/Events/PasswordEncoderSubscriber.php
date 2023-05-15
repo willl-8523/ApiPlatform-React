@@ -53,7 +53,7 @@ class PasswordEncoderSubscriber implements EventSubscriberInterface
      * -> getControllerResult() nous permet recuperer le resultat du controller
      *      apiPlatform
      * 
-     * @param [type] $event
+     * @param ViewEvent
      * @return void
      */
     public function encodePassword(ViewEvent $event) {
