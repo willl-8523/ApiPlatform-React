@@ -21,7 +21,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="users")
  * @UniqueEntity("email", message="L'adresse mail existe déjà")
- * @ApiResource
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"user_read"}
+ *  }
+ * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -29,13 +33,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Groups(
+     *  {"invoices_read",
+     *   "customer_read",
+     *   "invoices_subresource",
+     *    "user_read"
+     *  }
+     * )
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Groups(
+     *  {"invoices_read", 
+     *   "customer_read", 
+     *   "invoices_subresource",
+     *   "user_read"
+     *  }
+     * )
      * @Assert\NotBlank(message="Le prenom de l'utilisateur est obligatoire")
      * @Assert\Length(
      *  min=2,
@@ -48,7 +64,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Groups(
+     *  {"invoices_read", 
+     *   "customer_read", 
+     *   "invoices_subresource",
+     *   "user_read"
+     *  }
+     * )
      * @Assert\NotBlank(message="Le nom de l'utilisateur est obligatoire")
      * @Assert\Length(
      *  min=2,
@@ -61,7 +83,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Groups(
+     *  {"invoices_read", 
+     *   "customer_read", 
+     *   "invoices_subresource",
+     *   "user_read"
+     *  }
+     * )
      * @Assert\NotBlank(message="L'email' est obligatoire")
      * @Assert\Email(message = "Email invalide")
      */
@@ -82,12 +110,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
+     * @Groups(
+     *  {"invoices_read", 
+     *   "customer_read", 
+     *   "invoices_subresource",
+     *   "user_read"
+     *  }
+     * )
      */
     private $roles = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="user")
+     * @Groups(
+     *  {"invoices_read", 
+     *   "customer_read", 
+     *   "invoices_subresource",
+     *   "user_read"
+     *  }
+     * )
      */
     private $customers;
 
