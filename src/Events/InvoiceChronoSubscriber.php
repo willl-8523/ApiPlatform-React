@@ -31,32 +31,45 @@ class InvoiceChronoSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function setChronoForInvoice(ViewEvent $event) {
+    // public function setChronoForInvoice(ViewEvent $event) {
 
-        /**
-         * Trouver l'utilisateur actuellement connecté (security)
-         * Récuperer le repo des factures (InvoiceRepository)
-         * Récuperer la derniere facture qui a été inserée pour avoir son chrono
-         * Dans la facture créee, on donne le dernier chrono + 1
-         */
-        
+    //     /**
+    //      * Trouver l'utilisateur actuellement connecté (security)
+    //      * Récuperer le repo des factures (InvoiceRepository)
+    //      * Récuperer la derniere facture qui a été inserée pour avoir son chrono
+    //      * Dans la facture créee, on donne le dernier chrono + 1
+    //      */
+
+    //     $invoice = $event->getControllerResult();
+    //     // dd($invoice);
+    //     $method = $event->getRequest()->getMethod();
+
+    //     /** @var User $user */
+    //     $user = $this->security->getUser();
+
+    //     // if($user !== $invoice->getCustomer()->getUser()) {
+    //     //     throw new AccessDeniedHttpException("Ce client ne vous appartient pas, merci de vous rapprocher de l'utilisateur auquel il se rapporte.");
+    //     // }
+
+    //     if ($invoice instanceof Invoice && $method === "POST") {
+    //         $nextChrono = $this->repo->findNextChrono($this->security->getUser());
+    //         $invoice->setChrono($nextChrono);
+
+    //         $invoice->setSentAt(new DateTimeImmutable("now"));
+    //     }
+
+    // }
+    public function setChronoForInvoice(ViewEvent $event)
+    {
         $invoice = $event->getControllerResult();
-        // dd($invoice);
         $method = $event->getRequest()->getMethod();
-
-        /** @var User $user */
-        $user = $this->security->getUser();
-
-        if($user !== $invoice->getCustomer()->getUser()) {
-            throw new AccessDeniedHttpException("Ce client ne vous appartient pas, merci de vous rapprocher de l'utilisateur auquel il se rapporte.");
-        }
-
+        
         if ($invoice instanceof Invoice && $method === "POST") {
-            $nextChrono = $this->repo->findNextChrono($this->security->getUser());
-            $invoice->setChrono($nextChrono);
-
-            $invoice->setSentAt(new DateTimeImmutable("now"));
+            $user = $this->security->getUser();
+            if ($user !== $invoice->getCustomer()->getUser()) {
+                throw new AccessDeniedHttpException("Ce client ne vous appartient pas, merci de vous rapprocher de l'utilisateur auquel il se rapporte.");
+            }
+            $invoice->setChrono($this->repo->findNextChrono($user));
         }
-
     }
 }
