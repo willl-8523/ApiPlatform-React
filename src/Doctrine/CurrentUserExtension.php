@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use App\Entity\Customer;
 use App\Entity\Invoice;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -34,11 +35,16 @@ class  CurrentUserExtension implements QueryCollectionExtensionInterface, QueryI
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass) {
         // 1. Obtenir l'utilisateur connecté
         $user = $this->security->getUser();
+        // $user instanceof User => Verifie si l'utilisateur est connecté
 
         $role = $this->auth;
 
         // 2. Si on demande des invoices ou des customers alors, agir sur la requête pour qu'elle tienne compte de l'utilisateur 
-        if (($resourceClass === Customer::class || $resourceClass === Invoice::class) && !$role->isGranted("ROLE_ADMIN")) {
+        if (
+            ($resourceClass === Customer::class || $resourceClass === Invoice::class) 
+            && !$role->isGranted("ROLE_ADMIN") 
+            && $user instanceof User
+            ) {
             /**
              * dd($queryBuilder);
              * alias: "o" => SELECT * FROM customers (ou \App\Entity\Invoice) AS
