@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 /*
  * Welcome to your app's main JavaScript file!
@@ -17,10 +18,11 @@ console.log("Hello World !!!");
 
 const App = () => {
     return ( 
-        <h1>Bonjour à tous</h1>
+        <h1>Bonjour à tous !</h1>
     );
 }
- 
-export default App;
+
+const root = ReactDOM.createRoot(document.getElementById('app'));
+root.render(<App/>);
 
 
