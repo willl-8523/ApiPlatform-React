@@ -1,3 +1,5 @@
+import React from 'react';
+
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -11,4 +13,14 @@ import './styles/app.css';
 // start the Stimulus application
 import './bootstrap';
 
-console.log("Hello World");
+console.log("Hello World !!!");
+
+const App = () => {
+    return ( 
+        <h1>Bonjour à tous</h1>
+    );
+}
+ 
+export default App;
+
+
