@@ -1,43 +1,60 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const CustomersPage = () => {
-    return (
-      <>
-        <h1>Liste des clients</h1>
+  const [customers, setCustomers] = useState([]);
 
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Client</th>
-              <th>Email</th>
-              <th>Entreprise</th>
-              <th className="text-center">Factures</th>
-              <th className="text-center">Montant total</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>18</td>
+  useEffect(() => {
+    axios
+      .get('https://localhost:8000/api/customers')
+      .then((response) => response.data['hydra:member'])
+      .then((data) => setCustomers(data))
+      .catch(error => console.log(error.response));
+    }, []);
+    // console.log(customers);
+
+  return (
+    <>
+      <h1>Liste des clients</h1>
+
+      <table className="table table-hover">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Client</th>
+            <th>Email</th>
+            <th>Entreprise</th>
+            <th className="text-center">Factures</th>
+            <th className="text-center">Montant total</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {customers.map((customer) => (
+            <tr key={customer.id}>
+              <td>{customer.id}</td>
               <td>
-                <a href="#">Ari Boulogne</a>
+                <a href="#">
+                  {customer.firstName} {customer.lastName}
+                </a>
               </td>
-              <td>ari@example.com</td>
-              <td>Ari Inc</td>
+              <td>{customer.email}</td>
+              <td>{customer.company}</td>
+              {/* customer.invoices.length => Nombre de facture */}
+              <td className="text-center">{customer.invoices.length}</td>
+              {/* toLocaleString() => Affiche au format correspondant a la localisation */}
               <td className="text-center">
-                <span class="badge badge-dark px-2 py-1">4</span>
+                {customer.totalAmount.toLocaleString()} €
               </td>
-              <td className="text-center">2 400.00 €</td>
               <td>
                 <button className="btn btn-sm btn-danger">Supprimer</button>
               </td>
             </tr>
-          </tbody>
-        </table>
-      </>
-    );
-}
- 
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+};
+
 export default CustomersPage;
