@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 
 import Navbar from './js/components/Navbar';
+import HomePage from './js/pages/HomePage';
+import CustomersPage from './js/pages/CustomersPage';
 
 /*
  * Welcome to your app's main JavaScript file!
@@ -15,23 +18,23 @@ import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
-import HomePage from './js/pages/HomePage';
 
-console.log("Hello World !!!");
+console.log('Hello World !!!');
 
 const App = () => {
-    return ( 
-        <>
-            <Navbar />
+  return (
+    <HashRouter>
+      <Navbar />
 
-            <div className='container pt-5'>
-                <HomePage />
-            </div>
-        </>
-    );
-}
+      <main className="container pt-5">
+        <Routes>
+          <Route exact path="/" element={<HomePage />} />
+          <Route path="/customers" element={<CustomersPage />}></Route>
+        </Routes>
+      </main>
+    </HashRouter>
+  );
+};
 
 const root = ReactDOM.createRoot(document.getElementById('app'));
-root.render(<App/>);
-
-
+root.render(<App />);
