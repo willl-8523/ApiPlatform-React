@@ -7,7 +7,8 @@ const CustomersPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    axios
+    //127.0.0.1:8000/api/customers?pagination=true&count=10
+    https: axios
       .get('https://localhost:8000/api/customers')
       .then((response) => response.data['hydra:member'])
       .then((data) => setCustomers(data))

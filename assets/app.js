@@ -5,6 +5,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './js/components/Navbar';
 import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
+// import CustomerPageWithPaginationRequest from './js/pages/CustomerPageWithPaginationRequest';
 
 /*
  * Welcome to your app's main JavaScript file!
@@ -27,7 +28,13 @@ const App = () => {
       <main className="container pt-5">
         <Routes>
           <Route exact path="/" element={<HomePage />} />
-          <Route path="/customers" element={<CustomersPage />}></Route>
+          <Route path="/customers" element={<CustomersPage />} />
+          {/* 
+            <Route
+              path="/customers"
+              element={<CustomerPageWithPaginationRequest />}
+            ></Route> 
+          */}
         </Routes>
       </main>
     </HashRouter>
