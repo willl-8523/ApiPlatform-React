@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axios
@@ -19,18 +20,46 @@ const CustomersPage = () => {
     const copyCustomers = [...customers];
 
     // 2. On filtre le tableau des customers pour rétirer le customer correspondant à l'id
-    setCustomers(customers.filter(customer => customer.id !== id));
+    setCustomers(customers.filter((customer) => customer.id !== id));
 
-    // 3. On supprime le customer dans la bdd 
+    // 3. On supprime le customer dans la bdd
     axios
       .delete('https://localhost:8000/api/customers/' + id)
       .then((response) => console.log('ok'))
       .catch((error) => {
         // 4. Si on a une erreur on remet le tableau des customers (copyCustomers)
         setCustomers(copyCustomers);
-        console.log(error.response);
+        // console.log(error.response);
       });
   };
+
+  // Determiner le nombre de customer par page (arrondi superieur)
+  const itemsPerPage = 10;
+  const pagesCount = Math.ceil(customers.length / itemsPerPage);
+  // console.log(pagesCount);
+
+  // Construire un tableau qui contiendra les pages
+  const pages = [];
+  for (let i = 1; i <= pagesCount; i++) {
+    pages.push(i);
+  }
+  // console.log(pages);
+
+  // Mettre la classe active au li correspondant
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  /*
+    -> Afficher les customers correspondant à la page où on est
+      (d'où on part (start) et pendant combien (itemsPerPage))
+      page = 1 => start = 0 et itemsPerPage = 10 => de 0 à 9; 
+      page = 2 => start = 10 et itemsPerPage = 10 => de 10 à 19; ...
+    -> paginationCustomers => les customers correspondant à une page 
+  */
+  const start = currentPage * itemsPerPage - itemsPerPage;
+  const paginationCustomers = customers.slice(start, start + itemsPerPage);
+  // console.log(paginationCustomers);
 
   return (
     <>
@@ -49,7 +78,7 @@ const CustomersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {customers.map((customer) => (
+          {paginationCustomers.map((customer) => (
             <tr key={customer.id}>
               <td>{customer.id}</td>
               <td>
@@ -78,6 +107,46 @@ const CustomersPage = () => {
           ))}
         </tbody>
       </table>
+
+      <div className="d-flex justify-content-center">
+        <ul className="pagination pagination-lg">
+          <li className={'page-item ' + (currentPage === 1 && 'disabled')}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              &laquo;
+            </button>
+          </li>
+
+          {pages.map((page) => (
+            <li
+              key={page}
+              className={'page-item ' + (currentPage === page && 'active')}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </button>
+            </li>
+          ))}
+
+          <li
+            className={
+              'page-item ' + (currentPage === pagesCount && 'disabled')
+            }
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              &raquo;
+            </button>
+          </li>
+        </ul>
+      </div>
     </>
   );
 };
