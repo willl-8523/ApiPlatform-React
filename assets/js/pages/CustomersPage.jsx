@@ -15,9 +15,21 @@ const CustomersPage = () => {
 
   const handleDelete = (id) => {
     console.log(id);
+    // 1. On copie le tableau des customers
+    const copyCustomers = [...customers];
+
+    // 2. On filtre le tableau des customers pour rétirer le customer correspondant à l'id
+    setCustomers(customers.filter(customer => customer.id !== id));
+
+    // 3. On supprime le customer dans la bdd 
     axios
       .delete('https://localhost:8000/api/customers/' + id)
-      .then((response) => console.log(response));
+      .then((response) => console.log('ok'))
+      .catch((error) => {
+        // 4. Si on a une erreur on remet le tableau des customers (copyCustomers)
+        setCustomers(copyCustomers);
+        console.log(error.response);
+      });
   };
 
   return (
