@@ -5,9 +5,12 @@ import Pagination from '../components/Pagination';
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
+
+  // Nombre de customers par pages
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    //127.0.0.1:8000/api/customers?pagination=true&count=10
     https: axios
       .get('https://localhost:8000/api/customers')
       .then((response) => response.data['hydra:member'])
@@ -40,19 +43,47 @@ const CustomersPage = () => {
     setCurrentPage(page);
   };
 
-  // Nombre de customers par pages
-  const itemsPerPage = 10;
+  // Récuperer la valeur de input
+  const handleSearch = (event) => {
+    const value = event.currentTarget.value;
+    setSearch(value);
+
+    // Pour que chaque rechercher commence toujours par la page 1
+    setCurrentPage(1);
+  };
+
+  // Filtrer les customers en fonction de la recherche
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      customer.lastName.toLowerCase().includes(search.toLocaleLowerCase()) ||
+      customer.email.toLowerCase().includes(search.toLocaleLowerCase()) ||
+      customer.company.toLowerCase().includes(search.toLocaleLowerCase())
+  );
 
   /*
-    -> paginationCustomers => les customers correspondant à une page 
+    -> paginationCustomers => les customers correspondant à la recherche 
   */
-  const paginationCustomers = Pagination.getData(customers, currentPage, itemsPerPage);
+  const paginationCustomers = Pagination.getData(
+    filteredCustomers,
+    currentPage,
+    itemsPerPage
+  );
   // console.log(paginationCustomers);
 
   return (
     <>
       <h1>Liste des clients</h1>
-
+      <div className="form-group">
+        {/*input.form-control[placeholder="Rechercher cutomer ..."]*/}
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Rechercher customer ..."
+          onChange={handleSearch}
+          value={search}
+        />
+      </div>
       <table className="table table-hover">
         <thead>
           <tr>
@@ -95,9 +126,15 @@ const CustomersPage = () => {
           ))}
         </tbody>
       </table>
-
-      <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={customers.length} onPageChanged={handlePageChange} />
-      
+      {/* Si le nombre de customers est < au nombre d'item par page (10) enlever la pagination */}
+      {itemsPerPage < filteredCustomers.length && (
+        <Pagination
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          length={filteredCustomers.length}
+          onPageChanged={handlePageChange}
+        />
+      )}
     </>
   );
 };
