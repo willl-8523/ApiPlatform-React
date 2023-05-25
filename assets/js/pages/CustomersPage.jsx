@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Pagination from '../components/Pagination';
+import customersAPI from '../services/customersAPI';
+import { async } from 'regenerator-runtime';
 
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
@@ -10,17 +11,23 @@ const CustomersPage = () => {
   // Nombre de customers par pages
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    https: axios
-      .get('https://localhost:8000/api/customers')
-      .then((response) => response.data['hydra:member'])
-      .then((data) => setCustomers(data))
-      .catch((error) => console.log(error.response));
-  }, []);
-  // console.log(customers);
+  // Permet d'aller récuperer les customers
+  const fetchCustomers = async () => {
+    try {
+      const data = await customersAPI.findAll();
+      setCustomers(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
 
-  const handleDelete = (id) => {
-    console.log(id);
+  // Au chargement du composant on va chercher les customers
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  // Gestion de la suppression d'un customer
+  const handleDelete = async (id) => {
     // 1. On copie le tableau des customers
     const copyCustomers = [...customers];
 
@@ -28,25 +35,25 @@ const CustomersPage = () => {
     setCustomers(customers.filter((customer) => customer.id !== id));
 
     // 3. On supprime le customer dans la bdd
-    axios
-      .delete('https://localhost:8000/api/customers/' + id)
-      .then((response) => console.log('ok'))
-      .catch((error) => {
-        // 4. Si on a une erreur on remet le tableau des customers (copyCustomers)
-        setCustomers(copyCustomers);
-        // console.log(error.response);
-      });
+    try {
+      await customersAPI.delete(id);
+      console.log('ok');
+    } catch (error) {
+      // 4. Si on a une erreur on remet le tableau des customers (copyCustomers)
+      setCustomers(copyCustomers);
+      // console.log(error.response);
+    }
   };
 
-  // Mettre la classe active au li correspondant
+  // Gestion du changement de page (Mettre la classe active au li correspondant)
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  // Récuperer la valeur de input
-  const handleSearch = (event) => {
-    const value = event.currentTarget.value;
-    setSearch(value);
+  // Gestion de la recherche (Récuperer la valeur de input)
+  const handleSearch = ({currentTarget}) => {
+    // {currentTarget} => event.currentTarget
+    setSearch(currentTarget.value);
 
     // Pour que chaque rechercher commence toujours par la page 1
     setCurrentPage(1);
@@ -58,10 +65,11 @@ const CustomersPage = () => {
       customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
       customer.lastName.toLowerCase().includes(search.toLocaleLowerCase()) ||
       customer.email.toLowerCase().includes(search.toLocaleLowerCase()) ||
-      customer.company.toLowerCase().includes(search.toLocaleLowerCase())
+      (customer.company && customer.company.toLowerCase().includes(search.toLocaleLowerCase()))
   );
 
   /*
+    Pagination des données
     -> paginationCustomers => les customers correspondant à la recherche 
   */
   const paginationCustomers = Pagination.getData(
