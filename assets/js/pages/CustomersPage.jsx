@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import customersAPI from '../services/customersAPI';
-import { async } from 'regenerator-runtime';
 
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
@@ -63,9 +62,9 @@ const CustomersPage = () => {
   const filteredCustomers = customers.filter(
     (customer) =>
       customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      customer.lastName.toLowerCase().includes(search.toLocaleLowerCase()) ||
-      customer.email.toLowerCase().includes(search.toLocaleLowerCase()) ||
-      (customer.company && customer.company.toLowerCase().includes(search.toLocaleLowerCase()))
+      customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      customer.email.toLowerCase().includes(search.toLowerCase()) ||
+      (customer.company && customer.company.toLowerCase().includes(search.toLowerCase()))
   );
 
   /*

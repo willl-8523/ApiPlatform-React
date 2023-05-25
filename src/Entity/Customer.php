@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *  },
  *  normalizationContext={
  *      "groups"={"customer_read"}
- *  }
+ *  },
  * )
  * @ApiFilter(SearchFilter::class)
  */
