@@ -7,9 +7,10 @@ import CustomersPage from './js/pages/CustomersPage';
 import HomePage from './js/pages/HomePage';
 // import CustomerPageWithPaginationRequest from './js/pages/CustomerPageWithPaginationRequest';
 import InvoicesPage from './js/pages/InvoicesPage';
+import LoginPage from './js/pages/LoginPage';
 
-import './styles/app.css';
 import './bootstrap';
+import './styles/app.css';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route exact path="/" element={<HomePage />} />
           <Route path="/customers" element={<CustomersPage />} />
           <Route path="/invoices" element={<InvoicesPage />} />
+          <Route path="/login" element={<LoginPage />} />
           {/* 
             <Route
               path="/customers"
