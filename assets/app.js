@@ -5,13 +5,19 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './js/components/Navbar';
 import CustomersPage from './js/pages/CustomersPage';
 import HomePage from './js/pages/HomePage';
-// import CustomerPageWithPaginationRequest from './js/pages/CustomerPageWithPaginationRequest';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
+import authAPI from './js/services/authAPI';
+// import CustomerPageWithPaginationRequest from './js/pages/CustomerPageWithPaginationRequest';
 
 import './bootstrap';
 require('bootstrap');
+
+// On apporte le css personalisé
 import './styles/app.css';
+
+// Dès qu'on lance notre appilcation avant même de charger le composant, on execute:
+authAPI.setup();
 
 const App = () => {
   return (
