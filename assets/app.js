@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 
 import Navbar from './js/components/Navbar';
 import CustomersPage from './js/pages/CustomersPage';
@@ -19,12 +19,18 @@ import './styles/app.css';
 // Dès qu'on lance notre appilcation avant même de charger le composant, on execute:
 authAPI.setup();
 
+const PrivateRoute = ({ isAuthenticated, redirectPath = '/login' }) => {
+  if (isAuthenticated) {
+    return <Outlet />;
+  }
+  return <Navigate to={redirectPath} replace />;
+};
+
 const App = () => {
   // Il faut par defaut qu'on demande à notre authAPI si on est connecté ou pas
   const [isAuthenticated, setIsAuthenticated] = useState(
     authAPI.beAuthenticated()
   );
-
   console.log(isAuthenticated);
 
   return (
@@ -34,8 +40,10 @@ const App = () => {
       <main className="container pt-5">
         <Routes>
           <Route exact path="/" element={<HomePage />} />
-          <Route path="/customers" element={<CustomersPage />} />
-          <Route path="/invoices" element={<InvoicesPage />} />
+          <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+            <Route path="/customers" element={<CustomersPage />} />
+            <Route path="/invoices" element={<InvoicesPage />} />
+          </Route>
           <Route
             path="/login"
             element={<LoginPage onLogin={setIsAuthenticated} />}
