@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { useState } from 'react';
+import authenticate from '../services/authAPI';
 // import customersAPI from '../services/customersAPI';
 
 const LoginPage = () => {
@@ -10,12 +10,14 @@ const LoginPage = () => {
 
   const [error, setError] = useState('');
 
-  const handleChange = (event) => {
+  // Gestion des champs
+  const handleChange = ({ /*event*/ currentTarget }) => {
     // Value de l'input
-    const value = event.currentTarget.value;
+    // const value = event.currentTarget.value;
 
     // Nom de l'input (exp: name="username")
-    const name = event.currentTarget.name;
+    // const name = event.currentTarget.name;
+    const { value, name } = currentTarget;
 
     /**
      * [name] => username ou password
@@ -24,26 +26,18 @@ const LoginPage = () => {
     setCredentials({ ...credentials, [name]: value });
   };
 
+  // Gestion du submit
   const handleSubmit = async (event) => {
     event.preventDefault();
     // credentials => Données qu'on souhaite envoyer
     console.log(credentials);
 
     try {
-      // Si ça marche on stoke le token
-      const token = await axios
-        .post('https://127.0.0.1:8000/api/login_check', credentials)
-        .then((response) => response.data.token);
+      await authenticate(credentials);
 
       // Retirer l'erreur
       setError('');
 
-      // Stoker le token dans le localStorage
-      window.localStorage.setItem('authToken', token);
-
-      // On previent axios qu'on a maintenant un header par defaut sur toutes nos futures requêtes 
-      axios.defaults.headers["Authorization"] = "Bearer " + token;
-      
       /* Liste les customers en fonction du user connecté
         const data = await customersAPI.findAll();
         console.log(data); 
@@ -73,13 +67,13 @@ const LoginPage = () => {
             placeholder="Adresse de connection"
           />
           {/* 
-                invalid-feedback => affiche p si l'info de input n'est pas valid
-                pour cela rajouter la classe is-invalid
-                <p className="invalid-feedback">
-                  Aucun compte ne possède cette adresse ou les informations ne
-                  correspondent pas
-                </p>
-            */}
+              invalid-feedback => affiche p si l'info de input n'est pas valid
+              pour cela rajouter la classe is-invalid
+              <p className="invalid-feedback">
+                Aucun compte ne possède cette adresse ou les informations ne
+                correspondent pas
+              </p>
+          */}
           {error && <p className="invalid-feedback">{error}</p>}
         </div>
         <div className="form-group">
