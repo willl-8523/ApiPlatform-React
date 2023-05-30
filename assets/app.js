@@ -20,8 +20,8 @@ import './styles/app.css';
 authAPI.setup();
 
 const App = () => {
-  // A faire: Il faudrait par defaut qu'on demande à notre authAPI si on est connecté ou pas
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // Il faut par defaut qu'on demande à notre authAPI si on est connecté ou pas
+  const [isAuthenticated, setIsAuthenticated] = useState(authAPI.beAuthenticated());
 
   console.log(isAuthenticated);
 
