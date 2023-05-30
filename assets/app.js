@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
@@ -20,16 +20,24 @@ import './styles/app.css';
 authAPI.setup();
 
 const App = () => {
+  // A faire: Il faudrait par defaut qu'on demande à notre authAPI si on est connecté ou pas
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+  console.log(isAuthenticated);
+
   return (
     <HashRouter>
-      <Navbar />
+      <Navbar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated} />
 
       <main className="container pt-5">
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route path="/customers" element={<CustomersPage />} />
           <Route path="/invoices" element={<InvoicesPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/login"
+            element={<LoginPage onLogin={setIsAuthenticated} />}
+          />
           {/* 
             <Route
               path="/customers"

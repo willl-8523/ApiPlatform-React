@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import authAPI from '../services/authAPI';
 // import customersAPI from '../services/customersAPI';
 
-const LoginPage = () => {
+const LoginPage = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -37,6 +37,9 @@ const LoginPage = () => {
 
       // Retirer l'erreur
       setError('');
+
+      // Dire qu'on est connecté
+      onLogin(true);
 
       /* Liste les customers en fonction du user connecté
         const data = await customersAPI.findAll();
