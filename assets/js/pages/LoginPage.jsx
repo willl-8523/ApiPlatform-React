@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import authenticate from '../services/authAPI';
+import authAPI from '../services/authAPI';
 // import customersAPI from '../services/customersAPI';
 
 const LoginPage = () => {
@@ -33,7 +33,7 @@ const LoginPage = () => {
     console.log(credentials);
 
     try {
-      await authenticate(credentials);
+      await authAPI.authenticate(credentials);
 
       // Retirer l'erreur
       setError('');
