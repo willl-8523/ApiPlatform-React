@@ -10,6 +10,7 @@ import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
 
 import './bootstrap';
+require('bootstrap');
 import './styles/app.css';
 
 const App = () => {
