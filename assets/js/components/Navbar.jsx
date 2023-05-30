@@ -1,11 +1,14 @@
 import React from 'react';
 import authAPI from '../services/authAPI';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ isAuthenticated, onLogout }) => {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     authAPI.logout();
     onLogout(false);
+    navigate('/login');
   };
 
   return (

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import authAPI from '../services/authAPI';
+import { useNavigate } from 'react-router-dom';
 // import customersAPI from '../services/customersAPI';
 
 const LoginPage = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -40,6 +42,9 @@ const LoginPage = ({ onLogin }) => {
 
       // Dire qu'on est connecté
       onLogin(true);
+
+      // Remplace /login par /
+      navigate('/', { replace: true });
 
       /* Liste les customers en fonction du user connecté
         const data = await customersAPI.findAll();
