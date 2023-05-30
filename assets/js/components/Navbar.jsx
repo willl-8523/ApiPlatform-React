@@ -1,17 +1,18 @@
 import React from 'react';
 import authAPI from '../services/authAPI';
+import { Link } from 'react-router-dom';
 
 const Navbar = (props) => {
-  
+
   const handleLogout = () => {
     authAPI.logout();
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a className="navbar-brand" href="#">
+      <Link className="navbar-brand" to="/">
         ApiPlatform_React
-      </a>
+      </Link>
       <button
         className="navbar-toggler"
         type="button"
@@ -27,30 +28,30 @@ const Navbar = (props) => {
       <div className="collapse navbar-collapse" id="navbarColor02">
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
-            <a className="nav-link" href="#">
+            <Link className="nav-link" to="/customers">
               Clients
-            </a>
+            </Link>
             <span className="sr-only">(current)</span>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">
+            <Link className="nav-link" to="/invoices">
               Factures
-            </a>
+            </Link>
           </li>
         </ul>
         <ul className="navbar-nav ml-auto">
           <li className="nav-item">
-            <a href="#" className="nav-link mr-1">
+            <Link to="/register" className="nav-link mr-1">
               Inscription
-            </a>
+            </Link>
           </li>
           <li className="nav-item mb-3">
-            <a href="#" className="btn btn-secondary mr-1">
+            <Link to="/login" className="btn btn-secondary mr-1">
               Connexion
-            </a>
+            </Link>
           </li>
           <li className="nav-item mr-1">
-            <button onClick={handleLogout} href="#" className="btn btn-danger">
+            <button onClick={handleLogout} to="/logout" className="btn btn-danger">
               Déconnexion
             </button>
           </li>
