@@ -1,11 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Field from '../components/forms/Field';
 
 const CustomerPage = () => {
   // Permet de récupérer l'id de la route courante (avec router v6 ou >)
   const { id = 'new' } = useParams();
+  const navigate = useNavigate();
 
   const [customer, setCustomer] = useState({
     lastName: '',
@@ -34,8 +35,8 @@ const CustomerPage = () => {
         .get('https://localhost:8000/api/customers/' + id)
         .then((response) => response.data);
       const { firstName, lastName, email, company } = data;
-    //   console.log(firstName, lastName, email, company);
-      setCustomer({ firstName, lastName, email, company});
+      //   console.log(firstName, lastName, email, company);
+      setCustomer({ firstName, lastName, email, company });
     } catch (error) {
       console.log(error.response);
     }
@@ -52,18 +53,25 @@ const CustomerPage = () => {
     event.preventDefault();
 
     try {
-        if (editing) {
-            const response = await axios.put(
-              'https://localhost:8000/api/customers/' + id,
-              customer
-            );
-            console.log(response.data);
-        }
-      const response = await axios.post(
-        'https://localhost:8000/api/customers',
-        customer
-      );
-      //   console.log(response.data);
+      if (editing) {
+        const response = await axios.put(
+          'https://localhost:8000/api/customers/' + id,
+          customer
+        );
+        console.log(response.data);
+
+        // TODO : Flash notification de succès
+      } else {
+        const response = await axios.post(
+          'https://localhost:8000/api/customers',
+          customer
+        );
+
+        // TODO : Flash notification de succès
+
+
+        navigate('/customers', { replace: true });
+      }
       setErrors({});
     } catch (error) {
       if (error.response.data.violations) {
@@ -74,6 +82,8 @@ const CustomerPage = () => {
           }
         });
         setErrors(apiErrors);
+
+        // TODO: Flash notification d'erreur
       }
       //    console.log(error.response);
     }
