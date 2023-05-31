@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Pagination from '../components/Pagination';
 import customersAPI from '../services/customersAPI';
 
@@ -18,7 +19,7 @@ const CustomersPage = () => {
     } catch (error) {
       console.log(error.response);
     }
-  }
+  };
 
   // Au chargement du composant on va chercher les customers
   useEffect(() => {
@@ -50,7 +51,7 @@ const CustomersPage = () => {
   };
 
   // Gestion de la recherche (Récuperer la valeur de input)
-  const handleSearch = ({currentTarget}) => {
+  const handleSearch = ({ currentTarget }) => {
     // {currentTarget} => event.currentTarget
     setSearch(currentTarget.value);
 
@@ -64,7 +65,8 @@ const CustomersPage = () => {
       customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
       customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
       customer.email.toLowerCase().includes(search.toLowerCase()) ||
-      (customer.company && customer.company.toLowerCase().includes(search.toLowerCase()))
+      (customer.company &&
+        customer.company.toLowerCase().includes(search.toLowerCase()))
   );
 
   /*
@@ -80,7 +82,12 @@ const CustomersPage = () => {
 
   return (
     <>
-      <h1>Liste des clients</h1>
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <h2>Liste des clients</h2>
+        <Link to="/customers/new" className="btn btn-primary">
+          Créer un client
+        </Link>
+      </div>
       <div className="form-group">
         {/*input.form-control[placeholder="Rechercher cutomer ..."]*/}
         <input

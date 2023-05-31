@@ -16,6 +16,7 @@ require('bootstrap');
 
 // On apporte le css personalisé
 import './styles/app.css';
+import CustomerPage from './js/pages/CustomerPage';
 
 // Dès qu'on lance notre appilcation avant même de charger le composant, on execute:
 authAPI.setup();
@@ -37,6 +38,7 @@ const App = () => {
             <Route exact path="/" element={<HomePage />} />
             <Route element={<PrivateRoute />}>
               <Route path="/customers" element={<CustomersPage />} />
+              <Route path="/customers/:id" element={<CustomerPage />} />
               <Route path="/invoices" element={<InvoicesPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
