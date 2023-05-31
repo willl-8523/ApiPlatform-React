@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
 import authAPI from '../services/authAPI';
+import Field from '../components/forms/Field';
 // import customersAPI from '../services/customersAPI';
 
 const LoginPage = () => {
@@ -65,39 +66,21 @@ const LoginPage = () => {
       <h1 className="text-center">Connection à l'application</h1>
 
       <form className="w-50 mx-auto mt-5" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Adresse email</label>
-          <input
-            value={credentials.username}
-            onChange={handleChange}
-            type="email"
-            id="username"
-            className={'form-control' + (error && ' is-invalid')}
-            name="username"
-            placeholder="Adresse de connection"
-          />
-          {/* 
-              invalid-feedback => affiche p si l'info de input n'est pas valid
-              pour cela rajouter la classe is-invalid
-              <p className="invalid-feedback">
-                Aucun compte ne possède cette adresse ou les informations ne
-                correspondent pas
-              </p>
-          */}
-          {error && <p className="invalid-feedback">{error}</p>}
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Mot de passe</label>
-          <input
-            value={credentials.password}
-            onChange={handleChange}
-            type="password"
-            id="password"
-            className="form-control"
-            name="password"
-            placeholder="Mot de passe"
-          />
-        </div>
+        <Field
+          label={'Adresse email'}
+          name={'username'}
+          type={'email'}
+          value={credentials.username}
+          onChange={handleChange}
+          error={error}
+        />
+        <Field
+          label={'Mot de passe'}
+          name={'password'}
+          type={'password'}
+          value={credentials.password}
+          onChange={handleChange}
+        />
         {/*
             div.form-group>button:submit.btn.btn-success{Je me connecte}
         */}
