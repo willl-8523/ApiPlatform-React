@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../components/forms/Field';
 
-
 const CustomerPage = () => {
   const [createCustomer, setCreateCustomer] = useState({
-    lastName: 'Rodriguez',
+    lastName: '',
     firstName: '',
     email: '',
     company: '',
@@ -28,10 +27,23 @@ const CustomerPage = () => {
     event.preventDefault();
 
     try {
-        const response = await axios.post("https://localhost:8000/api/customers", createCustomer);
-        console.log(response.data);
+      const response = await axios.post(
+        'https://localhost:8000/api/customers',
+        createCustomer
+      );
+    //   console.log(response.data);
+      setErrors({});
     } catch (error) {
-       console.log(error.response); 
+      if (error.response.data.violations) {
+        const apiErrors = {};
+        error.response.data.violations.forEach((violation) => {
+          if (!apiErrors[violation.propertyPath]) {
+            apiErrors[violation.propertyPath] = violation.message;
+          }
+        });
+        setErrors(apiErrors);
+      }
+      //    console.log(error.response);
     }
     // console.log(createCustomer);
   };

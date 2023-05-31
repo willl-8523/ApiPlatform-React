@@ -35,7 +35,7 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // credentials => Données qu'on souhaite envoyer
-    console.log(credentials);
+    // console.log(credentials);
 
     try {
       await authAPI.authenticate(credentials);
