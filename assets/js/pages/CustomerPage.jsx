@@ -1,10 +1,13 @@
 import axios from 'axios';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
 
 const CustomerPage = () => {
-  const [createCustomer, setCreateCustomer] = useState({
+  // Permet de récupérer l'id de la route courante (avec router v6 ou >)
+  const { id = 'new' } = useParams();
+
+  const [customer, setCustomer] = useState({
     lastName: '',
     firstName: '',
     email: '',
@@ -13,7 +16,7 @@ const CustomerPage = () => {
 
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
-    setCreateCustomer({ ...createCustomer, [name]: value });
+    setCustomer({ ...customer, [name]: value });
   };
 
   const [errors, setErrors] = useState({
@@ -23,15 +26,44 @@ const CustomerPage = () => {
     company: '',
   });
 
+  const [editing, setEditing] = useState(false);
+
+  const fetchCustomer = async (id) => {
+    try {
+      const data = await axios
+        .get('https://localhost:8000/api/customers/' + id)
+        .then((response) => response.data);
+      const { firstName, lastName, email, company } = data;
+    //   console.log(firstName, lastName, email, company);
+      setCustomer({ firstName, lastName, email, company});
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  useEffect(() => {
+    if (id !== 'new') {
+      setEditing(true);
+      fetchCustomer(id);
+    }
+  }, [id]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+        if (editing) {
+            const response = await axios.put(
+              'https://localhost:8000/api/customers/' + id,
+              customer
+            );
+            console.log(response.data);
+        }
       const response = await axios.post(
         'https://localhost:8000/api/customers',
-        createCustomer
+        customer
       );
-    //   console.log(response.data);
+      //   console.log(response.data);
       setErrors({});
     } catch (error) {
       if (error.response.data.violations) {
@@ -45,25 +77,27 @@ const CustomerPage = () => {
       }
       //    console.log(error.response);
     }
-    // console.log(createCustomer);
+    // console.log(customer);
   };
 
   return (
     <>
-      <h2>Création d'un client</h2>
+      {(!editing && <h2>Création d'un client</h2>) || (
+        <h2>Modification d'un client</h2>
+      )}
 
       <form onSubmit={handleSubmit}>
         <Field
           name="lastName"
           label="Nom de famille"
-          value={createCustomer.lastName}
+          value={customer.lastName}
           onChange={handleChange}
           error={errors.lastName}
         />
         <Field
           name="firstName"
           label="Prénom"
-          value={createCustomer.firstName}
+          value={customer.firstName}
           onChange={handleChange}
           error={errors.firstName}
         />
@@ -71,14 +105,14 @@ const CustomerPage = () => {
           name="email"
           label="Adresse email"
           type="email"
-          value={createCustomer.email}
+          value={customer.email}
           onChange={handleChange}
           error={errors.email}
         />
         <Field
           name="company"
           label="Entreprise"
-          value={createCustomer.company}
+          value={customer.company}
           onChange={handleChange}
         />
 
