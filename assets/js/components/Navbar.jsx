@@ -1,13 +1,15 @@
-import React from 'react';
-import authAPI from '../services/authAPI';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../contexts/AuthContext';
+import authAPI from '../services/authAPI';
 
-const Navbar = ({ isAuthenticated, onLogout }) => {
+const Navbar = () => {
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     authAPI.logout();
-    onLogout(false);
+    setIsAuthenticated(false);
     navigate('/login');
   };
 

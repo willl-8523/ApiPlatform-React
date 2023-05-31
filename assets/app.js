@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter, Route, Routes, Navigate, Outlet } from 'react-router-dom';
-
+import { HashRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import Navbar from './js/components/Navbar';
+import AuthContext from './js/contexts/AuthContext';
 import CustomersPage from './js/pages/CustomersPage';
 import HomePage from './js/pages/HomePage';
 import InvoicesPage from './js/pages/InvoicesPage';
@@ -19,11 +19,11 @@ import './styles/app.css';
 // Dès qu'on lance notre appilcation avant même de charger le composant, on execute:
 authAPI.setup();
 
-const PrivateRoute = ({ isAuthenticated, redirectPath = '/login' }) => {
-  if (isAuthenticated) {
-    return <Outlet />;
-  }
-  return <Navigate to={redirectPath} replace />;
+// Autorisation des routes 
+const PrivateRoute = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  return isAuthenticated ? <Outlet /> : <Navigate to='/login' replace />;
 };
 
 const App = () => {
@@ -33,30 +33,34 @@ const App = () => {
   );
   console.log(isAuthenticated);
 
-  return (
-    <HashRouter>
-      <Navbar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated} />
+  const contextValue = { isAuthenticated, setIsAuthenticated };
 
-      <main className="container pt-5">
-        <Routes>
-          <Route exact path="/" element={<HomePage />} />
-          <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
-            <Route path="/customers" element={<CustomersPage />} />
-            <Route path="/invoices" element={<InvoicesPage />} />
-          </Route>
-          <Route
-            path="/login"
-            element={<LoginPage onLogin={setIsAuthenticated} />}
-          />
-          {/* 
+  return (
+    <AuthContext.Provider value={contextValue}>
+      <HashRouter>
+        <Navbar />
+
+        <main className="container pt-5">
+          <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/customers" element={<CustomersPage />} />
+              <Route path="/invoices" element={<InvoicesPage />} />
+            </Route>
+            <Route
+              path="/login"
+              element={<LoginPage />}
+            />
+            {/* 
             <Route
               path="/customers"
               element={<CustomerPageWithPaginationRequest />}
             ></Route> 
           */}
-        </Routes>
-      </main>
-    </HashRouter>
+          </Routes>
+        </main>
+      </HashRouter>
+    </AuthContext.Provider>
   );
 };
 

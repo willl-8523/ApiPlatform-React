@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import authAPI from '../services/authAPI';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../contexts/AuthContext';
+import authAPI from '../services/authAPI';
 // import customersAPI from '../services/customersAPI';
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
+  const { setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     username: '',
@@ -41,7 +43,7 @@ const LoginPage = ({ onLogin }) => {
       setError('');
 
       // Dire qu'on est connecté
-      onLogin(true);
+      setIsAuthenticated(true);
 
       // Remplace /login par /
       navigate('/', { replace: true });
