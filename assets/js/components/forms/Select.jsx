@@ -1,9 +1,8 @@
-import { error } from 'jquery';
 import React from 'react';
 
 const Select = ({ name, value, label, onChange, children, error }) => {
   return (
-    <div className='form-group'>
+    <div className="form-group">
       {/* div.form-group>label+select.from-control */}
 
       <label htmlFor={name}>{label}</label>
@@ -16,7 +15,7 @@ const Select = ({ name, value, label, onChange, children, error }) => {
       >
         {children}
       </select>
-      <p className='invalid-feedback'>erreur</p>
+      <p className="invalid-feedback">{error}</p>
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
+import axios from 'axios';
 
 const InvoicePage = () => {
+  const navigate = useNavigate();
   const [invoice, setInvoice] = useState({
     amount: '',
     customer: '',
@@ -37,10 +39,50 @@ const InvoicePage = () => {
     setInvoice({ ...invoice, [name]: value });
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    /**
+     * {...invoice, customer: `/api/customers/${invoice.customer}`}
+     * Comme nous voulons l'adresse (IRI) qui mène au customer, on donne à
+     * invoice.customer = /api/customers/${invoice.customer}
+     */
+    try {
+      const response = await axios.post('https://localhost:8000/api/invoices', {
+        ...invoice,
+        customer: `/api/customers/${invoice.customer}`,
+      });
+      // TODO/ Flash notification success
+      navigate('/invoices', { replace: true });
+    } catch ({ response }) {
+      console.log(response);
+      const { violations } = response.data;
+
+      if (violations) {
+        const apiErrors = {};
+        violations.forEach(({ propertyPath, message }) => {
+          if (!apiErrors[propertyPath]) {
+            apiErrors[propertyPath] = message;
+          }
+        });
+        setErrors(apiErrors);
+
+        // TODO: Flash notification d'erreur
+      }
+
+      // Validateur côté client du champs client
+      if (invoice.customer == '') {
+        setErrors({ ...errors, customer: 'Le client est obligatoire' });
+      }
+    }
+
+    console.log(invoice);
+  };
+
   return (
     <>
       <h2>Création d'une facture</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Field
           name={'amount'}
           type="number"
@@ -48,16 +90,17 @@ const InvoicePage = () => {
           label={'Montant'}
           onChange={handleChange}
           value={invoice.amount}
-          error={errors.amount}
+          error={((!invoice.amount || !(+invoice.amount)) && errors.amount) || ''}
         />
 
         <Select
-          name="customer"
+          name={'customer'}
           label="Client"
           value={invoice.customer}
-          error={errors.customer}
+          error={(!invoice.customer && errors.customer) || ''}
           onChange={handleChange}
         >
+          <option value="">Selectionner le client</option>
           {listCustomers.map((customer) => (
             <option key={customer.id} value={customer.id}>
               {customer.firstName} {customer.lastName}
@@ -69,16 +112,17 @@ const InvoicePage = () => {
           name={'status'}
           label={'Statut'}
           value={invoice.status}
-          error={errors.status}
+          error={(!invoice.status && errors.status) || ''}
           onChange={handleChange}
         >
+          <option value="">Choisir le statut de la facture</option>
           <option value="SENT">Envoyée</option>
           <option value="PAID">Payée</option>
           <option value="CANCELLED">Annulée</option>
         </Select>
 
         <div className="form-group">
-          <button type="submit" className="btn btn-success">
+          <button type="submit" className="btn btn-success" formNoValidate>
             Enregitrer
           </button>
           <Link to="/invoices" className="btn btn-link">

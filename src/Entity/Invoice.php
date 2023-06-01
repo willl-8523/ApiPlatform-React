@@ -62,8 +62,8 @@ class Invoice
     /**
      * @ORM\Column(type="float")
      * @Groups({"invoices_read", "customer_read", "invoices_subresource"})
-     * @Assert\NotBlank(message="Le montant de la facture est obligatoire")
-     * @Assert\Type(type="numeric", message="Le montant de la facture doit être numerique"
+     * @Assert\NotBlank(message="Le montant de la facture est obligatoire ou doit être un nombre")
+     * @Assert\Type(type="numeric", message="Le montant de la facture doit être un nombre"
      * )
      */
     private $amount;
