@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
 import axios from 'axios';
+import { async } from 'regenerator-runtime';
 
 const InvoicePage = () => {
   const navigate = useNavigate();
+  // Permet de récupérer l'id de la route courante (avec router v6 ou >)
+  const { id = 'new' } = useParams();
+
   const [invoice, setInvoice] = useState({
     amount: '',
     customer: '',
@@ -14,6 +18,7 @@ const InvoicePage = () => {
   });
 
   const [listCustomers, setListeCustomers] = useState([]);
+  const [editing, setEditing] = useState(false);
 
   const [errors, setErrors] = useState({
     amount: '',
@@ -30,9 +35,32 @@ const InvoicePage = () => {
     }
   };
 
+  const fetchInvoice = async (id) => {
+    try {
+      const data = await axios
+        .get('https://localhost:8000/api/invoices/' + id)
+        .then((response) => response.data);
+
+      // console.log(data);
+
+      const { amount, status, customer } = data;
+
+      setInvoice({ amount, status, customer: customer.id });
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   useEffect(() => {
-    fetchCustomers();
+    fetchCustomers(id);
   }, []);
+
+  useEffect(() => {
+    if (id !== 'new') {
+      setEditing(true);
+      fetchInvoice(id);
+    }
+  }, [id]);
 
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
@@ -48,12 +76,27 @@ const InvoicePage = () => {
      * invoice.customer = /api/customers/${invoice.customer}
      */
     try {
-      const response = await axios.post('https://localhost:8000/api/invoices', {
-        ...invoice,
-        customer: `/api/customers/${invoice.customer}`,
-      });
-      // TODO/ Flash notification success
-      navigate('/invoices', { replace: true });
+      if (editing) {
+        const response = await axios.put(
+          'https://localhost:8000/api/invoices/' + id,
+          {
+            ...invoice,
+            customer: `/api/customers/${invoice.customer}`,
+          }
+        );
+        // TODO : Flash modification success 
+        console.log(response);
+      } else {
+        const response = await axios.post(
+          'https://localhost:8000/api/invoices',
+          {
+            ...invoice,
+            customer: `/api/customers/${invoice.customer}`,
+          }
+        );
+        // TODO/ Flash notification success
+        navigate('/invoices', { replace: true });
+      }
     } catch ({ response }) {
       console.log(response);
       const { violations } = response.data;
@@ -81,7 +124,9 @@ const InvoicePage = () => {
 
   return (
     <>
-      <h2>Création d'une facture</h2>
+      {(editing && <h2>Modification d'une facture</h2>) || (
+        <h2>Création d'une facture</h2>
+      )}
       <form onSubmit={handleSubmit}>
         <Field
           name={'amount'}
@@ -90,7 +135,7 @@ const InvoicePage = () => {
           label={'Montant'}
           onChange={handleChange}
           value={invoice.amount}
-          error={((!invoice.amount || !(+invoice.amount)) && errors.amount) || ''}
+          error={((!invoice.amount || !+invoice.amount) && errors.amount) || ''}
         />
 
         <Select
