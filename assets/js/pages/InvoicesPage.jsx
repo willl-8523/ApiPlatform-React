@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import invoicesAPI from '../services/invoicesAPI';
+import { Link } from 'react-router-dom';
 
 
 const STATUS_CLASSES = {
@@ -94,7 +95,12 @@ const InvoicesPage = () => {
 
   return (
     <>
-      <h1>Liste des factures</h1>
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <h2>Liste des factures</h2>
+        <Link to="/invoices/new" className="btn btn-primary">
+          Créer une facture
+        </Link>
+      </div>
       <div className="form-group">
         <input
           type="text"
@@ -125,7 +131,7 @@ const InvoicesPage = () => {
                 </a>
               </td>
               <td className="text-center">{formatDate(invoice.sentAt)}</td>
-                {/*
+              {/*
                     <td className="text-center">
                     {new Date(invoice.sentAt).toLocaleDateString()}
                     </td>
