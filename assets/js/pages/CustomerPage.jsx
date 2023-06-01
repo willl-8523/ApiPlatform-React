@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
+import customersAPI from '../services/customersAPI';
 
 const CustomerPage = () => {
   // Permet de récupérer l'id de la route courante (avec router v6 ou >)
@@ -15,11 +15,6 @@ const CustomerPage = () => {
     company: '',
   });
 
-  const handleChange = ({ currentTarget }) => {
-    const { name, value } = currentTarget;
-    setCustomer({ ...customer, [name]: value });
-  };
-
   const [errors, setErrors] = useState({
     lastName: '',
     firstName: '',
@@ -29,19 +24,22 @@ const CustomerPage = () => {
 
   const [editing, setEditing] = useState(false);
 
+  // Récupration du customer en fonction de l'identifiant
   const fetchCustomer = async (id) => {
     try {
-      const data = await axios
-        .get('https://localhost:8000/api/customers/' + id)
-        .then((response) => response.data);
-      const { firstName, lastName, email, company } = data;
+      const { firstName, lastName, email, company } =
+        await customersAPI.findOne(id);
       //   console.log(firstName, lastName, email, company);
+
       setCustomer({ firstName, lastName, email, company });
     } catch (error) {
       console.log(error.response);
+      // TODO: Notification flash d'une erreur
+      navigate('/customers', { replace: true });
     }
   };
 
+  // Chargement du customer si besion au chargement du composant ou au changement de l'identifiant
   useEffect(() => {
     if (id !== 'new') {
       setEditing(true);
@@ -49,36 +47,39 @@ const CustomerPage = () => {
     }
   }, [id]);
 
+  // Gestion des changements des inputs dans le formulaire
+  const handleChange = ({ currentTarget }) => {
+    const { name, value } = currentTarget;
+    setCustomer({ ...customer, [name]: value });
+  };
+
+  // Gestion de la soumission du formulaire
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       if (editing) {
-        const response = await axios.put(
-          'https://localhost:8000/api/customers/' + id,
-          customer
-        );
-        console.log(response.data);
+        const response = await customersAPI.updateCustomer(id, customer)
+        // console.log(response.data);
 
         // TODO : Flash notification de succès
       } else {
-        const response = await axios.post(
-          'https://localhost:8000/api/customers',
-          customer
-        );
+        const response = await customersAPI.createCustomer(customer);
+        // console.log(response.data);
 
         // TODO : Flash notification de succès
-
 
         navigate('/customers', { replace: true });
       }
       setErrors({});
-    } catch (error) {
-      if (error.response.data.violations) {
+    } catch ({ response }) {
+      const { violations } = response.data;
+
+      if (violations) {
         const apiErrors = {};
-        error.response.data.violations.forEach((violation) => {
-          if (!apiErrors[violation.propertyPath]) {
-            apiErrors[violation.propertyPath] = violation.message;
+        violations.forEach(({propertyPath, message}) => {
+          if (!apiErrors[propertyPath]) {
+            apiErrors[propertyPath] = message;
           }
         });
         setErrors(apiErrors);
