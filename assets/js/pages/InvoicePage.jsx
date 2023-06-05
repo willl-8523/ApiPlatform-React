@@ -3,8 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
-import axios from 'axios';
-import { async } from 'regenerator-runtime';
+import invoicesAPI from '../services/invoicesAPI';
 
 const InvoicePage = () => {
   const navigate = useNavigate();
@@ -26,35 +25,41 @@ const InvoicePage = () => {
     status: '',
   });
 
+  // Récuprération des clients
   const fetchCustomers = async () => {
     try {
       const data = await customersAPI.findAll();
       setListeCustomers(data);
     } catch (error) {
       console.log(error.response);
+      navigate('/invoices', { replace: true });
+      // TODO/ Flash notification erreur
     }
   };
 
+  // Récuprération d'une facture
   const fetchInvoice = async (id) => {
     try {
-      const data = await axios
-        .get('https://localhost:8000/api/invoices/' + id)
-        .then((response) => response.data);
+      const { amount, status, customer } = await invoicesAPI.findInvoice(id);
+      // const { amount, status, customer } = data;
 
       // console.log(data);
 
-      const { amount, status, customer } = data;
 
       setInvoice({ amount, status, customer: customer.id });
     } catch (error) {
       console.log(error.response);
+      // TODO/ Flash notification error
+      navigate('/invoices', { replace: true });
     }
   };
 
+  // Récupération de la liste des clients à chaque chargement
   useEffect(() => {
     fetchCustomers(id);
   }, []);
 
+  // Récupération de la bonne facture quand l'identifiant de l'url change 
   useEffect(() => {
     if (id !== 'new') {
       setEditing(true);
@@ -67,6 +72,7 @@ const InvoicePage = () => {
     setInvoice({ ...invoice, [name]: value });
   };
 
+  // Gestion de la soumission du formulaire
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -77,28 +83,16 @@ const InvoicePage = () => {
      */
     try {
       if (editing) {
-        const response = await axios.put(
-          'https://localhost:8000/api/invoices/' + id,
-          {
-            ...invoice,
-            customer: `/api/customers/${invoice.customer}`,
-          }
-        );
+        await invoicesAPI.updateInvoice(id, invoice);
+        // console.log(response);
         // TODO : Flash modification success 
-        console.log(response);
       } else {
-        const response = await axios.post(
-          'https://localhost:8000/api/invoices',
-          {
-            ...invoice,
-            customer: `/api/customers/${invoice.customer}`,
-          }
-        );
+        await invoicesAPI.createInvoice(invoice);
         // TODO/ Flash notification success
         navigate('/invoices', { replace: true });
       }
     } catch ({ response }) {
-      console.log(response);
+      // console.log(response);
       const { violations } = response.data;
 
       if (violations) {
