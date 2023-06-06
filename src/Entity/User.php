@@ -98,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="Le mot de est obligatoire")
+     * @Assert\NotBlank(message="Le mot de passe de est obligatoire")
      * @Assert\Length(
      *  min=2,
      *  minMessage= "Le mot de passe doit avoir minimum 2 caracteres",

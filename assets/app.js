@@ -18,6 +18,7 @@ require('bootstrap');
 import './styles/app.css';
 import CustomerPage from './js/pages/CustomerPage';
 import InvoicePage from './js/pages/InvoicePage';
+import RegisterPage from './js/pages/RegisterPage';
 
 // Dès qu'on lance notre appilcation avant même de charger le composant, on execute:
 authAPI.setup();
@@ -44,6 +45,7 @@ const App = () => {
               <Route path="/invoices/:id" element={<InvoicePage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             {/* 
             <Route
               path="/customers"
