@@ -3,11 +3,13 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import customersAPI from '../services/customersAPI';
 import { toast } from 'react-toastify';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 
 const CustomerPage = () => {
   // Permet de récupérer l'id de la route courante (avec router v6 ou >)
   const { id = 'new' } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [customer, setCustomer] = useState({
     lastName: '',
@@ -33,6 +35,7 @@ const CustomerPage = () => {
       //   console.log(firstName, lastName, email, company);
 
       setCustomer({ firstName, lastName, email, company });
+      setLoading(false);
     } catch (error) {
       console.log(error.response);
       // TODO: Notification flash d'une erreur
@@ -44,6 +47,7 @@ const CustomerPage = () => {
   // Chargement du customer si besion au chargement du composant ou au changement de l'identifiant
   useEffect(() => {
     if (id !== 'new') {
+      setLoading(true);
       setEditing(true);
       fetchCustomer(id);
     }
@@ -61,7 +65,7 @@ const CustomerPage = () => {
 
     try {
       setErrors({});
-      
+
       if (editing) {
         const response = await customersAPI.updateCustomer(id, customer);
         // console.log(response.data);
@@ -103,45 +107,48 @@ const CustomerPage = () => {
         <h2>Modification d'un client</h2>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <Field
-          name="lastName"
-          label="Nom de famille"
-          value={customer.lastName}
-          onChange={handleChange}
-          error={errors.lastName}
-        />
-        <Field
-          name="firstName"
-          label="Prénom"
-          value={customer.firstName}
-          onChange={handleChange}
-          error={errors.firstName}
-        />
-        <Field
-          name="email"
-          label="Adresse email"
-          type="email"
-          value={customer.email}
-          onChange={handleChange}
-          error={errors.email}
-        />
-        <Field
-          name="company"
-          label="Entreprise"
-          value={customer.company}
-          onChange={handleChange}
-        />
+      {loading && <FormContentLoader />}
+      {!loading && (
+        <form onSubmit={handleSubmit}>
+          <Field
+            name="lastName"
+            label="Nom de famille"
+            value={customer.lastName}
+            onChange={handleChange}
+            error={errors.lastName}
+          />
+          <Field
+            name="firstName"
+            label="Prénom"
+            value={customer.firstName}
+            onChange={handleChange}
+            error={errors.firstName}
+          />
+          <Field
+            name="email"
+            label="Adresse email"
+            type="email"
+            value={customer.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <Field
+            name="company"
+            label="Entreprise"
+            value={customer.company}
+            onChange={handleChange}
+          />
 
-        <div className="form-group">
-          <button type="submit" className="btn btn-success">
-            Enregistrer
-          </button>
-          <Link to="/customers" className="btn btn-link">
-            Retour à la liste
-          </Link>
-        </div>
-      </form>
+          <div className="form-group">
+            <button type="submit" className="btn btn-success">
+              Enregistrer
+            </button>
+            <Link to="/customers" className="btn btn-link">
+              Retour à la liste
+            </Link>
+          </div>
+        </form>
+      )}
     </>
   );
 };

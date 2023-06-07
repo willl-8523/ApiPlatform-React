@@ -5,6 +5,7 @@ import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
 import invoicesAPI from '../services/invoicesAPI';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 
 const InvoicePage = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const InvoicePage = () => {
 
   const [listCustomers, setListeCustomers] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [errors, setErrors] = useState({
     amount: '',
@@ -31,6 +33,7 @@ const InvoicePage = () => {
     try {
       const data = await customersAPI.findAll();
       setListeCustomers(data);
+      setLoading(false);
     } catch (error) {
       console.log(error.response);
       navigate('/invoices', { replace: true });
@@ -47,6 +50,7 @@ const InvoicePage = () => {
       // console.log(data);
 
       setInvoice({ amount, status, customer: customer.id });
+      setLoading(false);
     } catch (error) {
       console.log(error.response);
       // Flash notification error
@@ -60,7 +64,7 @@ const InvoicePage = () => {
     fetchCustomers(id);
   }, []);
 
-  // Récupération de la bonne facture quand l'identifiant de l'url change 
+  // Récupération de la bonne facture quand l'identifiant de l'url change
   useEffect(() => {
     if (id !== 'new') {
       setEditing(true);
@@ -125,54 +129,59 @@ const InvoicePage = () => {
       {(editing && <h2>Modification d'une facture</h2>) || (
         <h2>Création d'une facture</h2>
       )}
-      <form onSubmit={handleSubmit}>
-        <Field
-          name={'amount'}
-          type="number"
-          placeholder={'Montant de la facture'}
-          label={'Montant'}
-          onChange={handleChange}
-          value={invoice.amount}
-          error={((!invoice.amount || !+invoice.amount) && errors.amount) || ''}
-        />
+      {loading && <FormContentLoader />}
+      {!loading && (
+        <form onSubmit={handleSubmit}>
+          <Field
+            name={'amount'}
+            type="number"
+            placeholder={'Montant de la facture'}
+            label={'Montant'}
+            onChange={handleChange}
+            value={invoice.amount}
+            error={
+              ((!invoice.amount || !+invoice.amount) && errors.amount) || ''
+            }
+          />
 
-        <Select
-          name={'customer'}
-          label="Client"
-          value={invoice.customer}
-          error={(!invoice.customer && errors.customer) || ''}
-          onChange={handleChange}
-        >
-          <option value="">Selectionner le client</option>
-          {listCustomers.map((customer) => (
-            <option key={customer.id} value={customer.id}>
-              {customer.firstName} {customer.lastName}
-            </option>
-          ))}
-        </Select>
+          <Select
+            name={'customer'}
+            label="Client"
+            value={invoice.customer}
+            error={(!invoice.customer && errors.customer) || ''}
+            onChange={handleChange}
+          >
+            <option value="">Selectionner le client</option>
+            {listCustomers.map((customer) => (
+              <option key={customer.id} value={customer.id}>
+                {customer.firstName} {customer.lastName}
+              </option>
+            ))}
+          </Select>
 
-        <Select
-          name={'status'}
-          label={'Statut'}
-          value={invoice.status}
-          error={(!invoice.status && errors.status) || ''}
-          onChange={handleChange}
-        >
-          <option value="">Choisir le statut de la facture</option>
-          <option value="SENT">Envoyée</option>
-          <option value="PAID">Payée</option>
-          <option value="CANCELLED">Annulée</option>
-        </Select>
+          <Select
+            name={'status'}
+            label={'Statut'}
+            value={invoice.status}
+            error={(!invoice.status && errors.status) || ''}
+            onChange={handleChange}
+          >
+            <option value="">Choisir le statut de la facture</option>
+            <option value="SENT">Envoyée</option>
+            <option value="PAID">Payée</option>
+            <option value="CANCELLED">Annulée</option>
+          </Select>
 
-        <div className="form-group">
-          <button type="submit" className="btn btn-success" formNoValidate>
-            Enregitrer
-          </button>
-          <Link to="/invoices" className="btn btn-link">
-            Retour aux factures
-          </Link>
-        </div>
-      </form>
+          <div className="form-group">
+            <button type="submit" className="btn btn-success" formNoValidate>
+              Enregitrer
+            </button>
+            <Link to="/invoices" className="btn btn-link">
+              Retour aux factures
+            </Link>
+          </div>
+        </form>
+      )}
     </>
   );
 };

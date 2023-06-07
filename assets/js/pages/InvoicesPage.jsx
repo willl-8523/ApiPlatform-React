@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import Pagination from '../components/Pagination';
-import invoicesAPI from '../services/invoicesAPI';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import Pagination from '../components/Pagination';
+import TableLoader from '../components/loaders/TableLoader';
+import invoicesAPI from '../services/invoicesAPI';
 
 const STATUS_CLASSES = {
   PAID: 'success',
@@ -22,14 +22,16 @@ const InvoicesPage = () => {
   const [invoices, setInvoices] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Nombre de invoices par pages
   const itemsPerPage = 10;
 
   const fetchInvoices = async () => {
     try {
-      const data = await invoicesAPI.findAll(); 
+      const data = await invoicesAPI.findAll();
       setInvoices(data);
+      setLoading(false);
     } catch (error) {
       console.log(error.response);
 
@@ -128,45 +130,52 @@ const InvoicesPage = () => {
             <th className="text-center">Action</th>
           </tr>
         </thead>
-        <tbody>
-          {paginationInvoices.map((invoice) => (
-            <tr key={invoice.id}>
-              <td>{invoice.chrono}</td>
-              <td>
-                <a href="#">
-                  {invoice.customer.firstName} {invoice.customer.lastName}
-                </a>
-              </td>
-              <td className="text-center">{formatDate(invoice.sentAt)}</td>
-              {/*
+        {!loading && (
+          <tbody>
+            {paginationInvoices.map((invoice) => (
+              <tr key={invoice.id}>
+                <td>{invoice.chrono}</td>
+                <td>
+                  <a href="#">
+                    {invoice.customer.firstName} {invoice.customer.lastName}
+                  </a>
+                </td>
+                <td className="text-center">{formatDate(invoice.sentAt)}</td>
+                {/*
                     <td className="text-center">
                     {new Date(invoice.sentAt).toLocaleDateString()}
                     </td>
                 */}
-              <td className="text-center">
-                <span
-                  className={'badge badge-' + STATUS_CLASSES[invoice.status]}
-                >
-                  {STATUS_LABELS[invoice.status]}
-                </span>
-              </td>
-              <td className="text-center">
-                {invoice.amount.toLocaleString()} €
-              </td>
-              <td className="d-flex justify-content-center">
-                <Link to={'/invoices/' + invoice.id} className="btn btn-sm btn-primary mr-1">Editer</Link>
-                <button
-                  className="btn btn-sm btn-danger"
-                  onClick={() => handleDelete(invoice.id)}
-                >
-                  Supprimer
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+                <td className="text-center">
+                  <span
+                    className={'badge badge-' + STATUS_CLASSES[invoice.status]}
+                  >
+                    {STATUS_LABELS[invoice.status]}
+                  </span>
+                </td>
+                <td className="text-center">
+                  {invoice.amount.toLocaleString()} €
+                </td>
+                <td className="d-flex justify-content-center">
+                  <Link
+                    to={'/invoices/' + invoice.id}
+                    className="btn btn-sm btn-primary mr-1"
+                  >
+                    Editer
+                  </Link>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => handleDelete(invoice.id)}
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
-
+      {loading && <TableLoader />}
       <Pagination
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
