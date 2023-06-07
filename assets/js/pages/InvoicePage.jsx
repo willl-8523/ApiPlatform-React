@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
@@ -33,7 +34,8 @@ const InvoicePage = () => {
     } catch (error) {
       console.log(error.response);
       navigate('/invoices', { replace: true });
-      // TODO/ Flash notification erreur
+      // Flash notification erreur
+      toast.error(`Impossible de charger les clients`);
     }
   };
 
@@ -42,14 +44,13 @@ const InvoicePage = () => {
     try {
       const { amount, status, customer } = await invoicesAPI.findInvoice(id);
       // const { amount, status, customer } = data;
-
       // console.log(data);
-
 
       setInvoice({ amount, status, customer: customer.id });
     } catch (error) {
       console.log(error.response);
-      // TODO/ Flash notification error
+      // Flash notification error
+      toast.error(`Impossible de charger la facture demandée`);
       navigate('/invoices', { replace: true });
     }
   };
@@ -85,10 +86,12 @@ const InvoicePage = () => {
       if (editing) {
         await invoicesAPI.updateInvoice(id, invoice);
         // console.log(response);
-        // TODO : Flash modification success 
+        // Notification flash d'un succès
+        toast.success(`La facture a bien été modifiée`);
       } else {
         await invoicesAPI.createInvoice(invoice);
-        // TODO/ Flash notification success
+        // Notification flash d'un succès
+        toast.success(`La facture a bien été enregistrée`);
         navigate('/invoices', { replace: true });
       }
     } catch ({ response }) {
@@ -104,7 +107,8 @@ const InvoicePage = () => {
         });
         setErrors(apiErrors);
 
-        // TODO: Flash notification d'erreur
+        // Flash notification d'erreur
+        toast.error(`Des erreurs dans votre formulaire`);
       }
 
       // Validateur côté client du champs client

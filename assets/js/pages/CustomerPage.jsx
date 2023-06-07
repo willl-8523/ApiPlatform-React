@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import customersAPI from '../services/customersAPI';
+import { toast } from 'react-toastify';
 
 const CustomerPage = () => {
   // Permet de récupérer l'id de la route courante (avec router v6 ou >)
@@ -35,6 +36,7 @@ const CustomerPage = () => {
     } catch (error) {
       console.log(error.response);
       // TODO: Notification flash d'une erreur
+      toast.error(`Le client n'a pas pu être chargé`);
       navigate('/customers', { replace: true });
     }
   };
@@ -58,33 +60,37 @@ const CustomerPage = () => {
     event.preventDefault();
 
     try {
+      setErrors({});
+      
       if (editing) {
-        const response = await customersAPI.updateCustomer(id, customer)
+        const response = await customersAPI.updateCustomer(id, customer);
         // console.log(response.data);
 
-        // TODO : Flash notification de succès
+        // Notification flash d'un succès
+        toast.success(`Le client a bien été modifié 😀`);
       } else {
         const response = await customersAPI.createCustomer(customer);
         // console.log(response.data);
 
-        // TODO : Flash notification de succès
+        // Notification flash d'un succès
+        toast.success(`Le client a bien été crée 😀`);
 
         navigate('/customers', { replace: true });
       }
-      setErrors({});
     } catch ({ response }) {
       const { violations } = response.data;
 
       if (violations) {
         const apiErrors = {};
-        violations.forEach(({propertyPath, message}) => {
+        violations.forEach(({ propertyPath, message }) => {
           if (!apiErrors[propertyPath]) {
             apiErrors[propertyPath] = message;
           }
         });
         setErrors(apiErrors);
 
-        // TODO: Flash notification d'erreur
+        // Notification flash d'erreur
+        toast.error(`Des errerus dans votre formulaire`);
       }
       //    console.log(error.response);
     }

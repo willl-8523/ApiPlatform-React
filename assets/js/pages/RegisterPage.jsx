@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import usersAPI from '../services/usersAPI';
+import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -43,7 +44,8 @@ const RegisterPage = () => {
       await usersAPI.register(user);
 
       setErrors({});
-      // TODO: Flash notification de success
+      // Notification flash d'un succès
+      toast.success(`Vous êtes desormais inscris, vous pouvez vous connecter !`);
       navigate('/login', { replace: true });
       console.log(response);
     } catch ({ response }) {
@@ -57,7 +59,8 @@ const RegisterPage = () => {
         });
         setErrors(apiErrors);
 
-        // TODO: Flash notification d'erreur
+        // Notification flash erreurs
+        toast.error(`Des erreurs dans votre formulaire !`);
       }
     }
     console.log(user);

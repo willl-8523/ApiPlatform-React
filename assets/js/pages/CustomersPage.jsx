@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../components/Pagination';
 import customersAPI from '../services/customersAPI';
+import { toast } from 'react-toastify';
 
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
@@ -18,6 +19,8 @@ const CustomersPage = () => {
       setCustomers(data);
     } catch (error) {
       console.log(error.response);
+      // Notification flash erreur
+      toast.error(`Impossible de charger les clients`);
     }
   };
 
@@ -37,11 +40,14 @@ const CustomersPage = () => {
     // 3. On supprime le customer dans la bdd
     try {
       await customersAPI.delete(id);
-      console.log('ok');
+      // Notification flash d'un succès
+      toast.success(`Le client a bien été supprimé 😀`);
     } catch (error) {
       // 4. Si on a une erreur on remet le tableau des customers (copyCustomers)
       setCustomers(copyCustomers);
       // console.log(error.response);
+      // Notification flash d'un succès
+      toast.success(`La suppression du client n'a pas pu fonctionner`);
     }
   };
 

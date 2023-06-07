@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Field from '../components/forms/Field';
 import AuthContext from '../contexts/AuthContext';
 import authAPI from '../services/authAPI';
-import Field from '../components/forms/Field';
 // import customersAPI from '../services/customersAPI';
+
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -46,6 +48,9 @@ const LoginPage = () => {
       // Dire qu'on est connecté
       setIsAuthenticated(true);
 
+      // Notification flash d'un succès
+      toast.success(`Vous êtes connecté 😀`);
+
       // Remplace /login par /
       navigate('/', { replace: true });
 
@@ -54,10 +59,11 @@ const LoginPage = () => {
         console.log(data); 
       */
     } catch (error) {
-      //   console.log(error.response);
+        console.log(error.response);
       setError(
         'Aucun compte ne possède cette adresse ou les informations ne correspondent pas!'
       );
+      toast.error(`Une erreur s'est produite`, { position: 'top-center' });
     }
   };
 

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import invoicesAPI from '../services/invoicesAPI';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 const STATUS_CLASSES = {
@@ -31,6 +32,9 @@ const InvoicesPage = () => {
       setInvoices(data);
     } catch (error) {
       console.log(error.response);
+
+      // Notification flash d'erreur
+      toast.error(`Erreur lors du chargement des factures !`);
     }
   };
 
@@ -63,8 +67,11 @@ const InvoicesPage = () => {
     // 3. On supprime l'invoice dans la bdd
     try {
       await invoicesAPI.delete(id);
+      // Notification flash d'un succès
+      toast.success(`La facture n°${invoices.id} a bien été supprimée`);
     } catch (error) {
       // 4. Si on a une erreur on remet le tableau des invoices (copyInvoices)
+      toast.error(`Une erreur est survenue !`);
       setInvoices(copyInvoices);
     }
   };
