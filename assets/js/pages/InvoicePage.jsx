@@ -126,10 +126,12 @@ const InvoicePage = () => {
 
   return (
     <>
-      {(editing && <h2>Modification d'une facture</h2>) || (
-        <h2>Création d'une facture</h2>
-      )}
-      {loading && <FormContentLoader />}
+      {
+        (loading && <FormContentLoader />) ||
+        (editing && <h2>Modification d'une facture</h2>) || (
+          <h2>Création d'une facture</h2>
+        )
+      }
       {!loading && (
         <form onSubmit={handleSubmit}>
           <Field
