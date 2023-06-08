@@ -45,9 +45,10 @@ const RegisterPage = () => {
 
       setErrors({});
       // Notification flash d'un succès
-      toast.success(`Vous êtes desormais inscris, vous pouvez vous connecter !`);
+      toast.success(
+        `Vous êtes desormais inscris, vous pouvez vous connecter !`
+      );
       navigate('/login', { replace: true });
-      console.log(response);
     } catch ({ response }) {
       const { violations } = response.data;
 
@@ -62,8 +63,8 @@ const RegisterPage = () => {
         // Notification flash erreurs
         toast.error(`Des erreurs dans votre formulaire !`);
       }
+      console.log(user);
     }
-    console.log(user);
   };
 
   return (

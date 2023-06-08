@@ -70,7 +70,7 @@ const InvoicesPage = () => {
     try {
       await invoicesAPI.delete(id);
       // Notification flash d'un succès
-      toast.success(`La facture n°${invoices.id} a bien été supprimée`);
+      toast.success(`La facture n°${id} a bien été supprimée`);
     } catch (error) {
       // 4. Si on a une erreur on remet le tableau des invoices (copyInvoices)
       toast.error(`Une erreur est survenue !`);

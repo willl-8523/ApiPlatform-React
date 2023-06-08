@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cache from './cache';
+import { CUSTOMERS_API } from '../config';
 
 async function findAll() {
   const cachedCustomers = await Cache.get('customers');
@@ -7,7 +8,7 @@ async function findAll() {
   if (cachedCustomers) {
     return cachedCustomers;
   }
-  return axios.get('https://localhost:8000/api/customers').then((response) => {
+  return axios.get(CUSTOMERS_API).then((response) => {
     const customers = response.data['hydra:member'];
     Cache.set('customers', customers);
     return customers;
@@ -22,7 +23,7 @@ async function findOne(id) {
   }
 
   return axios
-    .get('https://localhost:8000/api/customers/' + id)
+    .get(CUSTOMERS_API + '/' + id)
     .then((response) => {
       const customer = response.data;
 
@@ -33,25 +34,23 @@ async function findOne(id) {
 }
 
 function deleteCustomer(id) {
-  return axios
-    .delete('https://localhost:8000/api/customers/' + id)
-    .then(async (response) => {
-      const cachedCustomers = await Cache.get('customers');
+  return axios.delete(CUSTOMERS_API + '/' + id).then(async (response) => {
+    const cachedCustomers = await Cache.get('customers');
 
-      if (cachedCustomers) {
-        Cache.set(
-          'customers',
-          cachedCustomers.filter((item) => item.id !== id)
-        );
-      }
+    if (cachedCustomers) {
+      Cache.set(
+        'customers',
+        cachedCustomers.filter((item) => item.id !== id)
+      );
+    }
 
-      return response;
-    });
+    return response;
+  });
 }
 
 function updateCustomer(id, customer) {
   return axios
-    .put('https://localhost:8000/api/customers/' + id, customer)
+    .put(CUSTOMERS_API + '/' + id, customer)
     .then(async (response) => {
       const cachedCustomers = await Cache.get('customers');
       const cachedCustomer = await Cache.get('customers.' + id);
@@ -66,12 +65,12 @@ function updateCustomer(id, customer) {
          * Nous permet d'avoir l'index du customer qui est dans le cache
          */
         const index = cachedCustomers.findIndex((item) => item.id === +id);
-        const newCachedCustomer = response.data;
 
         const newTabCachedCustomers = [...cachedCustomers];
-        newTabCachedCustomers[index] = newCachedCustomer;
+        newTabCachedCustomers[index] = response.data;
+        // cachedCustomers[index] = newCachedCustomer;
 
-        Cache.set('customers', [...newTabCachedCustomers, newCachedCustomer]);
+        Cache.set('customers', newTabCachedCustomers);
       }
 
       return response;
@@ -80,7 +79,7 @@ function updateCustomer(id, customer) {
 
 function createCustomer(customer) {
   return axios
-    .post('https://localhost:8000/api/customers', customer)
+    .post(CUSTOMERS_API, customer)
     .then(async (response) => {
       const cachedCustomers = await Cache.get('customers');
 
