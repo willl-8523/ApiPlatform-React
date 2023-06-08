@@ -103,11 +103,10 @@ const CustomerPage = () => {
 
   return (
     <>
-      {(!editing && <h2>Création d'un client</h2>) || (
-        <h2>Modification d'un client</h2>
-      )}
-
-      {loading && <FormContentLoader />}
+      {(loading && <FormContentLoader />) ||
+        (!editing && <h2>Création d'un client</h2>) || (
+          <h2>Modification d'un client</h2>
+        )}
       {!loading && (
         <form onSubmit={handleSubmit}>
           <Field
