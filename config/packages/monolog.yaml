@@ -34,7 +34,10 @@ when@test:
                 channels: ["!event"]
             nested:
                 type: stream
-                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                # "%kernel.logs_dir%/%kernel.environment%.log" => /var/log/devlog
+                # path: "%kernel.logs_dir%/%kernel.environment%.log"
+                # "php://stderr" => je veux que mes logs (erreurs) s'enregistrent dans la ligne standard de php
+                path: "php://stderr"
                 level: debug
 
 when@prod:
