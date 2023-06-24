@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
-import authAPI from '../services/authAPI';
+import authAPI from '../authAPI';
 import { toast } from 'react-toastify';
 
 const Navbar = () => {

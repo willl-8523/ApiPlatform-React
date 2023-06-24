@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import AuthContext from '../contexts/AuthContext';
-import authAPI from '../services/authAPI';
+import authAPI from '../authAPI';
 // import customersAPI from '../services/customersAPI';
 
 import { toast } from 'react-toastify';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Field from '../components/forms/Field';
-import usersAPI from '../services/usersAPI';
+import usersAPI from '../usersAPI';
 import { toast } from 'react-toastify';
 
 const RegisterPage = () => {

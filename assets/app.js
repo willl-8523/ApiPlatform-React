@@ -8,7 +8,7 @@ import HomePage from './js/pages/HomePage';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
 import PrivateRoute from './js/security/PrivateRoute';
-import authAPI from './js/services/authAPI';
+import authAPI from './js/authAPI';
 // import CustomerPageWithPaginationRequest from './js/pages/CustomerPageWithPaginationRequest';
 
 import './bootstrap';

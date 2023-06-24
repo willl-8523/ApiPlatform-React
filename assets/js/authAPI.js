@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import customersAPI from './customersAPI';
 import jwtDecode from 'jwt-decode';
-import { LOGIN_API } from '../config';
+import { LOGIN_API } from './config';
 
 /**
  * Déconnexion (suppression du token du localStorage et sur Axios)

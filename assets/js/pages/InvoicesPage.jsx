@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Pagination from '../components/Pagination';
 import TableLoader from '../components/loaders/TableLoader';
-import invoicesAPI from '../services/invoicesAPI';
+import invoicesAPI from '../invoicesAPI';
 
 const STATUS_CLASSES = {
   PAID: 'success',
