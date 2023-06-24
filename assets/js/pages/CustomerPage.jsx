@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Field from '../components/forms/Field';
-import customersAPI from '../customersAPI';
+import customersAPI from '../services/customersAPI';
 import { toast } from 'react-toastify';
 import FormContentLoader from '../components/loaders/FormContentLoader';
 

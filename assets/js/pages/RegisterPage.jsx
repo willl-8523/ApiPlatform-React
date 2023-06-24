@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Field from '../components/forms/Field';
-import usersAPI from '../usersAPI';
+import usersAPI from '../services/usersAPI';
 import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
@@ -44,7 +44,6 @@ const RegisterPage = () => {
       await usersAPI.register(user);
 
       setErrors({});
-      
       // Notification flash d'un succès
       toast.success(
         `Vous êtes desormais inscris, vous pouvez vous connecter !`

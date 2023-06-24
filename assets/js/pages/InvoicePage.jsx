@@ -3,8 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
-import customersAPI from '../customersAPI';
-import invoicesAPI from '../invoicesAPI';
+import customersAPI from '../services/customersAPI';
+import invoicesAPI from '../services/invoicesAPI';
 import FormContentLoader from '../components/loaders/FormContentLoader';
 
 const InvoicePage = () => {
