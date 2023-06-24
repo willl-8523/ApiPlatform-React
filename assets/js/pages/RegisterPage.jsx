@@ -44,6 +44,7 @@ const RegisterPage = () => {
       await usersAPI.register(user);
 
       setErrors({});
+      
       // Notification flash d'un succès
       toast.success(
         `Vous êtes desormais inscris, vous pouvez vous connecter !`
