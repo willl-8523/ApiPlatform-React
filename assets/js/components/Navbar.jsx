@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <Link className="navbar-brand" to="/">
-        ApiPlatform_React
+        Acceuil
       </Link>
       <button
         className="navbar-toggler"
